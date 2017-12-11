@@ -32,5 +32,36 @@ def get_hypernyms(noun):
     #pp.pprint([(i.definition(),i.unicode_repr(), i.max_depth()) for i in list_of_synsets])
     return strings_of_synsets, var_out 
 
+# You want to do POS-tagging and lemmatizaion using NLTK in English. Well... you could use morphy, wordnet own lemmatizer,  
+# but it works with a simplified tagset that is NOT the peen treebank tagset universal (of course).
+# The two functions below take care of the problem (in a very naive way). 
+
+# First change the penn wordnet lable to something "wordnetty"
+def univ_pos_changer(stringa):
+    if stringa=="NOUN":
+        return "n"
+    elif stringa=="VERB":
+        return "v"
+    elif stringa=="ADJ":
+        return "a"
+    elif stringa=="ADV":
+        return "r"
+    else:
+        return None
+
+# Then take care of the lemmatization, via morphy 
+
+def lemmatizer(tupla):
+    if wn.morphy(tupla[0], univ_pos_changer(tupla[1]))==None:
+        return tupla[0]+"_"+tupla[1]
+    else:
+        return wn.morphy(tupla[0], univ_pos_changer(tupla[1]))+"_"+tupla[1]
+
+# this is an example of how I used it: the function cycles through the mess of lists of lists and applies the lemmatizer
+# I said it: naive.
+def tag_me(corpus):
+    return [[lemmatizer(x) for x in linea] for linea in corpus]
+
+        
 
 
