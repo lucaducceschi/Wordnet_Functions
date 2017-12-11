@@ -35,8 +35,16 @@ def get_hypernyms(noun):
 # You want to do POS-tagging and lemmatizaion using NLTK in English. Well... you could use morphy, wordnet own lemmatizer,  
 # but it works with a simplified tagset that is NOT the peen treebank tagset universal (of course).
 # The two functions below take care of the problem (in a very naive way). 
+#
+# Basically, if you do:
+# lemmatizer(("dogs", "NOUN"))
+#
+# you get:
+# ('dog', 'NOUN')
+#
+# if you don't understand how this can be useful, go back and check what lemmatization is ;-)
 
-# First change the penn wordnet lable to something "wordnetty"
+# First change the penn wordnet lable to something "wordnetty". The grammatical categories are limited.
 def univ_pos_changer(stringa):
     if stringa=="NOUN":
         return "n"
@@ -49,13 +57,14 @@ def univ_pos_changer(stringa):
     else:
         return None
 
-# Then take care of the lemmatization, via morphy 
+# Then take care of the lemmatization, via morphy. This assumes that you feed it a list of tuples containing ("word", "tag")
 
 def lemmatizer(tupla):
     if wn.morphy(tupla[0], univ_pos_changer(tupla[1]))==None:
-        return tupla[0]+"_"+tupla[1]
+        return tupla[0], tupla[1]
     else:
-        return wn.morphy(tupla[0], univ_pos_changer(tupla[1]))+"_"+tupla[1]
+        return wn.morphy(tupla[0], univ_pos_changer(tupla[1])), tupla[1]
+   
 
 # this is an example of how I used it: the function cycles through the mess of lists of lists and applies the lemmatizer
 # I said it: naive.
